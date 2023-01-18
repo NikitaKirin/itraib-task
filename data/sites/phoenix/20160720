@@ -1,0 +1,20 @@
+# Nagios TYPO3 Monitoring Version 1.2.12 - https://schams.net/nagios
+
+TYPO3:version-6.2.26
+PHP:version-5.5.14
+EXT:vhs-version-2.4.0
+EXT:static_info_tables-version-6.3.10
+EXT:nagios-version-1.2.12
+EXT:it_view_helpers-version-1.0.0
+EXT:it_foseco_datasheets_tables-version-0.0.0
+EXT:it_foseco_datasheets_scheduler-version-0.0.1
+EXT:it_foseco_datasheets-version-1.4.9
+EXT:it_foseco_datasheets_hooks-version-0.0.0
+EXT:it_foseco_datasheets_core-version-1.0.0
+EXT:it_feplugin-version-0.1.1
+EXTDEPTYPO3:not-supported
+SITENAME:Project+Phoenix
+DBTABLES:84
+TIMESTAMP:1468979846-EDT
+DEPRECATIONLOG:unknown
+DONATIONNOTICE:not-supported

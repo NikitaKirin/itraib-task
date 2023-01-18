@@ -1,0 +1,11 @@
+# Nagios TYPO3 Monitoring Version 2.0.0 - https://schams.net/nagios
+
+EXT:metaseo-2.0.0
+EXT:nagios-2.0.0
+EXT:realurl-2.0.2
+EXT:zlbm-1.0.0
+PHP:version-5.6.22
+TYPO3:version-7.6.2
+SITENAME:ZLBM
+DEPRECATIONLOG:disabled
+TIMESTAMP:1466733633-MEST

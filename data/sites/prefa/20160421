@@ -1,0 +1,19 @@
+# Nagios TYPO3 Monitoring Version 2.0.0 - https://schams.net/nagios
+
+EXT:metaseo-2.0.0
+EXT:nagios-2.0.0
+EXT:picasa-999.99.99
+EXT:prefa-999.99.99
+EXT:prefa_10reasons-999.99.99
+EXT:prefa_form-999.99.99
+EXT:realurl-1.13.6
+EXT:static_info_tables-6.3.9
+EXT:static_info_tables_de-6.4.0
+EXT:static_info_tables_fr-6.1.0
+EXT:static_info_tables_it-6.3.1
+EXT:vhs-2.4.0
+PHP:version-5.5.9
+TYPO3:version-7.6.2
+SITENAME:PREFA
+DEPRECATIONLOG:enabled
+TIMESTAMP:1461203980-CEST

@@ -1,0 +1,12 @@
+# Nagios TYPO3 Monitoring Version 2.0.2 - https://schams.net/nagios
+
+EXT:ad_factory-1.0.1
+EXT:metaseo-2.0.0
+EXT:nagios-2.0.2
+EXT:realurl-1.13.5
+EXT:vhs-3.0.0
+PHP:version-5.5.38
+TYPO3:version-7.6.10
+SITENAME:AdFactory
+DEPRECATIONLOG:disabled
+TIMESTAMP:1469671253-CEST

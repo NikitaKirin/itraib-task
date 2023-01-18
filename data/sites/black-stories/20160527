@@ -1,0 +1,12 @@
+# Nagios TYPO3 Monitoring Version 2.0.0 - https://schams.net/nagios
+
+EXT:black_stories-1.0.1
+EXT:nagios-2.0.0
+EXT:realurl-1.13.4
+EXT:site_core-1.0.1
+EXT:vhs-2.3.3
+PHP:version-5.6.22
+TYPO3:version-7.4.0
+SITENAME:Black+Stories
+DEPRECATIONLOG:disabled
+TIMESTAMP:1464362250-CEST

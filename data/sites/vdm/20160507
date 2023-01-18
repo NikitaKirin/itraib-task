@@ -1,0 +1,21 @@
+# Nagios TYPO3 Monitoring Version 1.2.12 - https://schams.net/nagios
+
+TYPO3:version-6.2.17
+PHP:version-5.5.9
+EXT:vhs-version-2.3.3
+EXT:vdm_metals-version-1.0.0
+EXT:vdm_metals_products-version-1.0.0
+EXT:vdm_metals_downloads-version-1.0.0
+EXT:vdm_metals_contact-version-1.0.0
+EXT:vdm_import_export-version-1.0.0
+EXT:realurl-version-1.13.6
+EXT:nagios-version-1.2.12
+EXT:metaseo-version-1.0.8
+EXT:k23_imagecrop-version-1.6.2
+EXT:it_search-version-1.0.0
+EXTDEPTYPO3:not-supported
+SITENAME:VDM+Metals
+DBTABLES:92
+TIMESTAMP:1462586421-CEST
+DEPRECATIONLOG:disabled
+DONATIONNOTICE:not-supported

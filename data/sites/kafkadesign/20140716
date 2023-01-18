@@ -1,0 +1,19 @@
+# Nagios TYPO3 Monitoring Version 1.2.9 - http://schams.net/nagios
+
+TYPO3:version-4.5.6
+PHP:version-5.2.6
+EXT:it_slideshow-version-1.0.1
+EXT:nagios-version-1.2.9
+EXT:phpmyadmin-version-4.11.4
+EXT:realurl-version-1.11.2
+EXT:static_info_tables-version-2.2.0
+EXT:templavoila-version-1.5.5
+EXT:typoscript_code-version-3.1.0
+EXTDEPTYPO3:realurl-4.4.0-0.0.0
+EXTDEPTYPO3:static_info_tables-4.3-0.0.0
+EXTDEPTYPO3:templavoila-4.2.0-0.0.0
+SITENAME:kafkadesign
+DBTABLES:57
+TIMESTAMP:1405503287-CEST
+DEPRECATIONLOG:unknown
+DONATIONNOTICE:not-supported
