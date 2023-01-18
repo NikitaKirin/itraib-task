@@ -7,11 +7,27 @@
 
 echo yii\grid\GridView::widget([
     'dataProvider' => $dataProvider,
-    'layout'=>"{items}",
-    'columns' => [
+    'layout'       => "{items}",
+    'columns'      => [
         [
             'attribute' => 'title',
-            'label' => 'Website'
-        ]
-    ]
+            'label'     => 'Website',
+        ],
+        [
+            'attribute' => 'PHP',
+            'label'     => 'PHP',
+        ],
+        [
+            'attribute' => 'TYPO3',
+            'label'     => 'TYPO3',
+        ],
+        [
+            'attribute' => 'Extensions',
+            'label'     => 'Extensions',
+        ],
+        [
+            'attribute' => 'LastUpdate',
+            'label' => 'LastUpdate'
+        ],
+    ],
 ]);
