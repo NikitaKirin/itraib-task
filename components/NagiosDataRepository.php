@@ -46,11 +46,32 @@ class NagiosDataRepository extends Component
 
         $versions = file_get_contents('../data/signature.txt');
 
-        preg_match_all('/typo3-version/', $versions, $matches);
+        preg_match_all('/[^#]typo3-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $typoVersions);
+        preg_match_all('/[^#]php-version[.](critical|warning)\s?=\s?[0-9,x.]+/', $versions, $phpVersions);
 
-        //VarDumper::dump($matches);
+        //VarDumper::dump($phpVersions[0]);
 
-        //VarDumper::dump($versions);
+        $versionsData = [];
+
+        foreach ($typoVersions[0] as $typoVersion){
+            preg_match("/\s[0-9,x.]+/", $typoVersion, $result);
+            if (preg_match("/warning/", $typoVersion)){
+                $versionsData['typo3']['warning'][] = $result[0];
+                continue;
+            }
+            $versionsData['typo3']['critical'][] = $result[0];
+        }
+
+        foreach ($phpVersions[0] as $phpVersion){
+            preg_match("/\s[0-9,x.]+/", $phpVersion, $resultPhp);
+            if (preg_match("/warning/", $phpVersion)) {
+                $versionsData['php']['warning'][] = $resultPhp[0];
+                continue;
+            }
+            $versionsData['php']['critical'][] = $result[0];
+        }
+
+        VarDumper::dump($versionsData);
 
         $dirs = array_slice(scandir('../data/sites'), 2);
 
