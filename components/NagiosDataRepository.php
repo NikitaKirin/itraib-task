@@ -42,7 +42,6 @@ class NagiosDataRepository extends Component
      */
     public function getData()
     {
-        $result = [];
 
         $versions = file_get_contents('../data/signature.txt');
 
@@ -54,12 +53,12 @@ class NagiosDataRepository extends Component
         $versionsData = [];
 
         foreach ($typoVersions[0] as $typoVersion){
-            preg_match("/\s[0-9,x.]+/", $typoVersion, $result);
+            preg_match("/\s[0-9,x.]+/", $typoVersion, $typoV);
             if (preg_match("/warning/", $typoVersion)){
-                $versionsData['typo3']['warning'][] = $result[0];
+                $versionsData['typo3']['warning'][] = $typoV[0];
                 continue;
             }
-            $versionsData['typo3']['critical'][] = $result[0];
+            $versionsData['typo3']['critical'][] = $typoV[0];
         }
 
         foreach ($phpVersions[0] as $phpVersion){
@@ -68,10 +67,12 @@ class NagiosDataRepository extends Component
                 $versionsData['php']['warning'][] = $resultPhp[0];
                 continue;
             }
-            $versionsData['php']['critical'][] = $result[0];
+            $versionsData['php']['critical'][] = $resultPhp[0];
         }
 
         VarDumper::dump($versionsData);
+
+        $result = [];
 
         $dirs = array_slice(scandir('../data/sites'), 2);
 
