@@ -42,35 +42,34 @@ class NagiosDataRepository extends Component
      */
     public function getData()
     {
-
         $versions = file_get_contents('../data/signature.txt');
-
-        preg_match_all('/[^#]typo3-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $typoVersions);
-        preg_match_all('/[^#]php-version[.](critical|warning)\s?=\s?[0-9,x.]+/', $versions, $phpVersions);
-
-        //VarDumper::dump($phpVersions[0]);
-
         $versionsData = [];
+        $versionsData['typo3']['warning'] = [];
+        $versionsData['typo3']['critical'] = [];
+        $versionsData['php']['warning'] = [];
+        $versionsData['php']['critical'] = [];
 
-        foreach ($typoVersions[0] as $typoVersion){
-            preg_match("/\s[0-9,x.]+/", $typoVersion, $typoV);
-            if (preg_match("/warning/", $typoVersion)){
-                $versionsData['typo3']['warning'][] = $typoV[0];
-                continue;
-            }
-            $versionsData['typo3']['critical'][] = $typoV[0];
+        preg_match_all('/[^#]typo3-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $typoVersionStrings);
+        preg_match_all('/[^#]php-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $phpVersionStrings);
+
+
+        foreach ($typoVersionStrings[0] as $typoVersionString) {
+            preg_match("/\s[0-9,x.]+/", $typoVersionString, $typoVersion);
+            preg_match("/(warning|critical)/", $typoVersionString, $typoVersionStatus);
+            $versionsData['typo3'][$typoVersionStatus[0]][] = $typoVersion[0];
         }
 
-        foreach ($phpVersions[0] as $phpVersion){
-            preg_match("/\s[0-9,x.]+/", $phpVersion, $resultPhp);
-            if (preg_match("/warning/", $phpVersion)) {
-                $versionsData['php']['warning'][] = $resultPhp[0];
-                continue;
-            }
-            $versionsData['php']['critical'][] = $resultPhp[0];
+        foreach ($phpVersionStrings[0] as $phpVersionString) {
+            preg_match("/\s[0-9,x.]+/", $phpVersionString, $phpVersion);
+            preg_match("/(warning|critical)/", $phpVersionString, $phpVersionStatus);
+            $versionsData['php'][$phpVersionStatus[0]][] = $phpVersion[0];
         }
 
-        VarDumper::dump($versionsData);
+        $versionsData['typo3']['warning'] = implode(',', $versionsData['typo3']['warning']);
+        $versionsData['typo3']['critical'] = implode(',', $versionsData['typo3']['critical']);
+        $versionsData['php']['warning'] = implode(',', $versionsData['php']['warning']);
+        $versionsData['php']['critical'] = implode(',', $versionsData['php']['critical']);
+
 
         $result = [];
 
