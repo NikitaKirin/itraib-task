@@ -118,12 +118,13 @@ class NagiosDataRepository extends Component
         // Пробегаем по директории каждого сайта
         foreach ($dirs as $title) {
             $files = scandir("../data/sites/$title"); // Получаем список всех файлов с инфой текущего сайта
-            $lastFile = $files[count($files) - 1];
+            $fileIndex = count($files) - 1;
+            $lastFile = $files[$fileIndex];
             $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
 
             // Проверка на пустой файл с нужной информацией
-            if (strlen($lastFileContent) < 1) {
-                $lastFile = $files[count($files) - 2];
+            while (strlen($lastFileContent) < 1){
+                $lastFile = $files[$fileIndex--];
                 $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
             }
 
