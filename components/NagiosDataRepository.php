@@ -49,6 +49,7 @@ class NagiosDataRepository extends Component
         $versionsData['php']['warning'] = [];
         $versionsData['php']['critical'] = [];
 
+
         preg_match_all('/[^#]typo3-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $typoVersionStrings);
         preg_match_all('/[^#]php-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $phpVersionStrings);
 
@@ -70,6 +71,7 @@ class NagiosDataRepository extends Component
         $versionsData['php']['warning'] = implode(',', $versionsData['php']['warning']);
         $versionsData['php']['critical'] = implode(',', $versionsData['php']['critical']);
 
+        //var_dump($versionsData['typo3']);
 
         $result = [];
 
@@ -79,24 +81,64 @@ class NagiosDataRepository extends Component
             $files = scandir("../data/sites/$title");
             $lastFile = $files[count($files) - 1];
             $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
-            $php = substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6);
-            $typo3 = substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5);
+            if (strlen($lastFileContent) < 1){
+                $lastFile = $files[count($files) - 2];
+                $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
+            }
+            $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
+            $typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
             $lastUpdate = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 10, 10);
             $timeZone = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 21, 4);
-            //$lastUpdate = preg_match("/TIMESTAMP:[0-9]-CEST/", $lastFileContent);
             $test = new \DateTime();
             if ($timeZone !== false) {
                 $test->setTimestamp($lastUpdate);
             }
-            //$test->setTimezone(timezone_open($timeZone));
+            if (strlen($php) > 1) {
+                $count = strlen($php) - 3;
+                $phpWarning = preg_match(
+                    "/($php([,\s]))|($php[0][.]$php[2]([.x0-9]{".$count."}))/",
+                    $versionsData['php']['warning']
+                );
+                $phpCritical = preg_match(
+                    "/($php([,\s]))|($php[0][.]$php[2]([.x0-9]{".$count."}))/",
+                    $versionsData['php']['critical']
+                );
+            } else {
+                $phpWarning = preg_match("/$php([,\s])/", $versionsData['php']['warning']);
+                $phpCritical = preg_match("/$php([,\s])/", $versionsData['php']['critical']);
+            }
+            if (strlen($typo3) > 1) {
+                $count = strlen($typo3) - 3;
+                $typo3Warning = preg_match(
+                    "/($typo3([,\s]))|($typo3[0][.]$typo3[2]([.x0-9]{".$count."}))/",
+                    $versionsData['typo3']['warning']
+                );
+                $typo3Critical = preg_match(
+                    "/($typo3([,\s]))|($typo3[0][.]$typo3[2]([.x0-9]{".$count."}))/",
+                    $versionsData['typo3']['critical']
+                );
+            } else {
+                $typo3Warning = preg_match("/$typo3([,\s])/", $versionsData['typo3']['warning']);
+                $typo3Critical = preg_match("/$typo3([,\s])/", $versionsData['typo3']['critical']);
+            }
             $result[] =
                 [
                     'title'      => $title,
-                    'PHP'        => $php,
-                    'TYPO3'      => $typo3,
+                    'PHP'        => [
+                        'version'  => $php,
+                        'warning'  => $phpWarning,
+                        'critical' => $phpCritical,
+                    ],
+                    'TYPO3'      => [
+                        'version'  => $typo3,
+                        'warning'  => $typo3Warning,
+                        'critical' => $typo3Critical,
+                    ],
                     "LastUpdate" => Carbon::make($test)->format('d.m.Y h:m'),
                 ];
         }
+
+        //var_dump($result);
         return $result;
     }
 }
