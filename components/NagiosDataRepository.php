@@ -48,10 +48,33 @@ class NagiosDataRepository extends Component
         $versionsData['typo3']['critical'] = [];
         $versionsData['php']['warning'] = [];
         $versionsData['php']['critical'] = [];
+        $versionsData['extensions'] = [];
 
 
         preg_match_all('/[^#]typo3-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $typoVersionStrings);
         preg_match_all('/[^#]php-version[.](critical|warning)\s=\s[0-9,x.]+/', $versions, $phpVersionStrings);
+        preg_match_all(
+            '/[^#]extension[.]([a-z0-9_]+)[.](critical|warning)\s=\s([0-9,.]+)/i',
+            $versions,
+            $extensionsVersionStrings
+        );
+
+
+        $extensionsNames = $extensionsVersionStrings[1];
+        $extensionsStatuses = $extensionsVersionStrings[2];
+        $extensionsVersions = $extensionsVersionStrings[3];
+
+        // Формируем массив с информацией о расширениях
+        for ($i = 0; $i < count($extensionsNames); $i++) {
+            $versionsData['extensions'] += [
+                $extensionsNames[$i] => [
+                    $extensionsVersions[$i],
+                    $extensionsStatuses[$i],
+                ],
+            ];
+        }
+
+        //var_dump($versionsData['extensions']);
 
 
         foreach ($typoVersionStrings[0] as $typoVersionString) {
@@ -78,21 +101,43 @@ class NagiosDataRepository extends Component
         $dirs = array_slice(scandir('../data/sites'), 2);
 
         foreach ($dirs as $title) {
+
             $files = scandir("../data/sites/$title");
             $lastFile = $files[count($files) - 1];
             $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
-            if (strlen($lastFileContent) < 1){
+            if (strlen($lastFileContent) < 1) {
                 $lastFile = $files[count($files) - 2];
                 $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
             }
+
             $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
             $typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
             $lastUpdate = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 10, 10);
             $timeZone = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 21, 4);
+            preg_match_all("/EXT:([a-z0-9_]+)-([0-9.]+)/", $lastFileContent, $siteExtensionsVersionStrings);
+
+            $siteExtensionsNames = $siteExtensionsVersionStrings[1];
+            $siteExtensionsVersions = $siteExtensionsVersionStrings[2];
+
+            $siteExtensionStatus = "ok";
+            for ($i = 0; $i < count($siteExtensionsNames); $i++) {
+                // Проверка на существование extension в базе данных
+                if (array_key_exists($siteExtensionsNames[$i], $versionsData['extensions'])) {
+                    $dataExtensionVersions = $versionsData['extensions'][$siteExtensionsNames[$i]][0];
+                    $flag = preg_match("/($siteExtensionsVersions[$i])/", $dataExtensionVersions);
+                    if ($flag > 0) {
+                        $siteExtensionStatus = $versionsData['extensions'][$siteExtensionsNames[$i]][1];
+                    }
+                }
+            }
+
+
             $test = new \DateTime();
             if ($timeZone !== false) {
                 $test->setTimestamp($lastUpdate);
             }
+
+
             if (strlen($php) > 1) {
                 $count = strlen($php) - 3;
                 $phpWarning = preg_match(
@@ -107,6 +152,8 @@ class NagiosDataRepository extends Component
                 $phpWarning = preg_match("/$php([,\s])/", $versionsData['php']['warning']);
                 $phpCritical = preg_match("/$php([,\s])/", $versionsData['php']['critical']);
             }
+
+
             if (strlen($typo3) > 1) {
                 $count = strlen($typo3) - 3;
                 $typo3Warning = preg_match(
@@ -121,6 +168,8 @@ class NagiosDataRepository extends Component
                 $typo3Warning = preg_match("/$typo3([,\s])/", $versionsData['typo3']['warning']);
                 $typo3Critical = preg_match("/$typo3([,\s])/", $versionsData['typo3']['critical']);
             }
+
+
             $result[] =
                 [
                     'title'      => $title,
@@ -133,6 +182,9 @@ class NagiosDataRepository extends Component
                         'version'  => $typo3,
                         'warning'  => $typo3Warning,
                         'critical' => $typo3Critical,
+                    ],
+                    'Extensions' => [
+                        'status' => $siteExtensionStatus,
                     ],
                     "LastUpdate" => Carbon::make($test)->format('d.m.Y h:m'),
                 ];
