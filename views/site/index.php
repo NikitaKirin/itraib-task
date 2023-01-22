@@ -19,6 +19,7 @@ echo yii\grid\GridView::widget([
             'attribute' => 'PHP',
             'label'     => 'PHP',
             'content'   => function ($data) {
+                // По статусу определяем: какой класс html-элементу необходимо добавить
                 $class = "";
                 if ($data['PHP']['warning'] !== 0) {
                     $class = "yellow";
@@ -27,17 +28,11 @@ echo yii\grid\GridView::widget([
                     $class = 'red';
                 }
                 return "<div class='$class'>{$data['PHP']['version']}</div>";
-                //return $data['PHP']['version'] . ' ' . $data['PHP']['warning'] . ' ' . $data['PHP']['critical'] ;
             },
-            //'class'     => 'test',
         ],
         [
             'attribute' => 'TYPO3',
             'label'     => 'TYPO3',
-            /*'value'     => function ($data) {
-                // if ($data['PHP'])
-                return $data['TYPO3']['version']." ".$data["TYPO3"]['warning']." ".$data["TYPO3"]['critical'];
-            },*/
             'content' => function($data){
                 $class = "";
                 if ($data['TYPO3']['warning'] !== 0){
