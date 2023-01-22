@@ -52,6 +52,22 @@ echo yii\grid\GridView::widget([
         [
             'attribute' => 'Extensions',
             'label'     => 'Extensions',
+            'content' => function($data) {
+                $class = "";
+                $text = "";
+                if ($data['Extensions']['status'] === 'ok'){
+                    $text = 'OK';
+                }
+                elseif ($data['Extensions']['status'] === 'warning'){
+                    $class = 'yellow';
+                    $text = 'WARNING';
+                }
+                elseif($data['Extensions']['status'] === 'critical') {
+                    $class = 'red';
+                    $text = 'CRITICAL';
+                }
+                return "<div class='$class' style='margin: -8px; padding: 8px; text-align: center;'>$text</div>";
+            }
         ],
         [
             'attribute' => 'LastUpdate',
