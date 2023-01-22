@@ -131,11 +131,15 @@ class NagiosDataRepository extends Component
             // Получаем все данные о версиях модулей текущего сайта
             $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
             $typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
-            $lastUpdate = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 10, 10);
-            $timeZone = substr($lastFileContent, strripos($lastFileContent, 'TIMESTAMP:') + 21, 4);
+            preg_match("/TIMESTAMP:(\d+)-\w+/i", $lastFileContent, $siteDateTime);
             preg_match_all("/EXT:([a-z0-9_]+)-([0-9.]+)/", $lastFileContent, $siteExtensionsVersionStrings);
 
+            // Работаем с меткой времени текущего сайта
+            $siteTimestamp = $siteDateTime[1];
+            $finalSiteTimestamp = new \DateTime();
+            $finalSiteTimestamp->setTimestamp($siteTimestamp);
 
+            // Работаем с extensions текущего сайта
             $siteExtensionsNames = $siteExtensionsVersionStrings[1]; // Формируем массив с именами extensions текущего сайта
             $siteExtensionsVersions = $siteExtensionsVersionStrings[2]; // Формируем массив с версиями extensions текущего сайта
 
@@ -151,12 +155,6 @@ class NagiosDataRepository extends Component
                         $siteExtensionStatus = $versionsData['extensions'][$siteExtensionsNames[$i]][1]; // Ставим статус расширения critical или warning
                     }
                 }
-            }
-
-
-            $test = new \DateTime();
-            if ($timeZone !== false) {
-                $test->setTimestamp($lastUpdate);
             }
 
 
@@ -210,7 +208,7 @@ class NagiosDataRepository extends Component
                     'Extensions' => [
                         'status' => $siteExtensionStatus,
                     ],
-                    "LastUpdate" => Carbon::make($test)->format('d.m.Y h:m'),
+                    "LastUpdate" => Carbon::make($finalSiteTimestamp)->format('d.m.Y h:m'),
                 ];
         }
 
