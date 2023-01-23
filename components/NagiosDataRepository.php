@@ -134,8 +134,8 @@ class NagiosDataRepository extends Component
 
 
             // Получаем все данные о версиях модулей текущего сайта
-            $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
-            //$typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
+            preg_match("/PHP:version-([0-9.]+)/", $lastFileContent, $phpVersionStrings);
+            $php = $phpVersionStrings[1];
             preg_match("/TYPO3:version-([0-9.]+)/", $lastFileContent, $typoVersionStrings);
             $typo3 = $typoVersionStrings[1];
             preg_match("/TIMESTAMP:(\d+)-\w+/i", $lastFileContent, $siteDateTime);
