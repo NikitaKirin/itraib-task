@@ -130,7 +130,8 @@ class NagiosDataRepository extends Component
 
             // Получаем название сайта
             preg_match("/SITENAME:([a-z-+]+)/i", $lastFileContent, $siteTitleStrings);
-            $siteTitle = $siteTitleStrings[1];
+            $siteTitle = str_replace("+", " ", $siteTitleStrings[1]);
+
 
             // Получаем все данные о версиях модулей текущего сайта
             $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
@@ -147,7 +148,7 @@ class NagiosDataRepository extends Component
 
             // Работаем с extensions текущего сайта
             $siteExtensionsNames = $siteExtensionsVersionStrings[1]; // Формируем массив с именами extensions текущего сайта
-            $siteExtensionsVersions = $siteExtensionsVersionStrings[2]; // Формируем массив с версиями extensions текущего сайта
+            $siteExtensionsVersions = $siteExtensionsVersionStrings[3]; // Формируем массив с версиями extensions текущего сайта
             $siteExtensionStatus = "ok"; // Статус расширений текущего сайта
 
             // Проверяем все extensions текущего сайта с данными из файла signatures.txt
@@ -155,8 +156,8 @@ class NagiosDataRepository extends Component
                 // Проверка на существование extension в файле signatures.txt
                 if (array_key_exists($siteExtensionsNames[$i], $versionsData['extensions'])) {
                     $dataExtensionVersions = $versionsData['extensions'][$siteExtensionsNames[$i]][0];
-                    $flag = preg_match("/($siteExtensionsVersions[$i])/", $dataExtensionVersions);
-                    if ($flag > 0) {
+                    $flag = preg_match("#".$siteExtensionsVersions[$i]."#", $dataExtensionVersions);
+                    if ($flag > 0 ) {
                         $siteExtensionStatus = $versionsData['extensions'][$siteExtensionsNames[$i]][1]; // Ставим статус расширения critical или warning
                     }
                 }
