@@ -81,7 +81,7 @@ class NagiosDataRepository extends Component
         for ($i = 0; $i < count($extensionsNames); $i++) {
             $versionsData['extensions'] += [
                 $extensionsNames[$i] => [
-                    $extensionsVersions[$i],
+                    explode(',',$extensionsVersions[$i]),
                     $extensionsStatuses[$i],
                 ],
             ];
@@ -156,8 +156,7 @@ class NagiosDataRepository extends Component
                 // Проверка на существование extension в файле signatures.txt
                 if (array_key_exists($siteExtensionsNames[$i], $versionsData['extensions'])) {
                     $dataExtensionVersions = $versionsData['extensions'][$siteExtensionsNames[$i]][0];
-                    $flag = preg_match("#".$siteExtensionsVersions[$i]."#", $dataExtensionVersions);
-                    if ($flag > 0 ) {
+                    if (in_array($siteExtensionsVersions[$i], $dataExtensionVersions)) {
                         $siteExtensionStatus = $versionsData['extensions'][$siteExtensionsNames[$i]][1]; // Ставим статус расширения critical или warning
                     }
                 }
