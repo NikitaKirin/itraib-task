@@ -132,7 +132,7 @@ class NagiosDataRepository extends Component
             $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
             $typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
             preg_match("/TIMESTAMP:(\d+)-\w+/i", $lastFileContent, $siteDateTime);
-            preg_match_all("/EXT:([a-z0-9_]+)-([0-9.]+)/", $lastFileContent, $siteExtensionsVersionStrings);
+            preg_match_all("/EXT:([a-z0-9_]+)(-version)?-([0-9.]+)/", $lastFileContent, $siteExtensionsVersionStrings);
 
             // Работаем с меткой времени текущего сайта
             $siteTimestamp = $siteDateTime[1];
@@ -142,7 +142,6 @@ class NagiosDataRepository extends Component
             // Работаем с extensions текущего сайта
             $siteExtensionsNames = $siteExtensionsVersionStrings[1]; // Формируем массив с именами extensions текущего сайта
             $siteExtensionsVersions = $siteExtensionsVersionStrings[2]; // Формируем массив с версиями extensions текущего сайта
-
             $siteExtensionStatus = "ok"; // Статус расширений текущего сайта
 
             // Проверяем все extensions текущего сайта с данными из файла signatures.txt
