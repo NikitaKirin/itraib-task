@@ -128,6 +128,10 @@ class NagiosDataRepository extends Component
                 $lastFileContent = file_get_contents("../data/sites/$title/$lastFile");
             }
 
+            // Получаем название сайта
+            preg_match("/SITENAME:([a-z-+]+)/i", $lastFileContent, $siteTitleStrings);
+            $siteTitle = $siteTitleStrings[1];
+
             // Получаем все данные о версиях модулей текущего сайта
             $php = rtrim(substr($lastFileContent, strripos($lastFileContent, 'PHP:version-') + 12, 6));
             $typo3 = rtrim(substr($lastFileContent, strripos($lastFileContent, 'TYPO3:version-') + 14, 5));
@@ -193,7 +197,7 @@ class NagiosDataRepository extends Component
             // Формируем результирующий массив
             $result[] =
                 [
-                    'title'      => $title,
+                    'title'      => $siteTitle,
                     'PHP'        => [
                         'version'  => $php,
                         'warning'  => $phpWarning,
